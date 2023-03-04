@@ -1,3 +1,4 @@
+import Sidebar from "@/components/Sidebar";
 import Head from "next/head";
 
 export default function Home() {
@@ -9,9 +10,17 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
-        <h1>Hello world!</h1>
-      </div>
+
+      <main className="flex min-h-screen max-w-7xl mx-auto">
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Feed */}
+
+        {/* Widgets */}
+
+        {/* Modal */}
+      </main>
     </>
   );
 }
