@@ -1,5 +1,6 @@
 import Feed from "@/components/Feed";
 import Sidebar from "@/components/Sidebar";
+import Widget from "@/components/Widget";
 import Head from "next/head";
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
         <Feed />
 
         {/* Widgets */}
+        <Widget />
 
         {/* Modal */}
       </main>
