@@ -3,7 +3,7 @@ import Sidebar from "@/components/Sidebar";
 import Widget from "@/components/Widget";
 import Head from "next/head";
 
-export default function Home() {
+export default function Home({ newsResults }) {
   return (
     <>
       <Head>
@@ -13,7 +13,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen max-w-7xl mx-auto">
+      <main className="flex min-h-screen mx-auto">
         {/* Sidebar */}
         <Sidebar />
 
@@ -21,10 +21,19 @@ export default function Home() {
         <Feed />
 
         {/* Widgets */}
-        <Widget />
+        <Widget newsResults={newsResults.articles} />
 
         {/* Modal */}
       </main>
     </>
   );
+}
+
+// https://saurav.tech/NewsAPI/top-headlines/category/business/us.json
+
+export async function getServerSideProps() {
+  const newsResults = await fetch(
+    "https://saurav.tech/NewsAPI/top-headlines/category/business/us.json"
+  ).then((result) => result.json());
+  return { props: { newsResults } };
 }
