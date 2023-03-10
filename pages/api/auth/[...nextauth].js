@@ -22,7 +22,7 @@ export const authOptions = {
         .join("")
         .toLocaleLowerCase();
       const userToken = token.sub;
-      session.user.sessionUsername = nameModified + userToken;
+      session.user.uid = userToken;
       return session;
     },
   },

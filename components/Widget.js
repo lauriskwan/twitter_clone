@@ -37,7 +37,7 @@ export default function Widget({ newsResults, randomUsersResults }) {
         <h4 className="font-bold text-xl px-4">Who to follow</h4>
         {randomUsersResults.slice(0, randomUserNum).map((randomUser, index) => (
           <div
-            key={randomUser.login.username}
+            key={randomUser.email}
             className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-200"
           >
             <img
@@ -48,10 +48,10 @@ export default function Widget({ newsResults, randomUsersResults }) {
             />
             <div className="truncate ml-4 leading-5">
               <h4 className="font-bold hover:underline text-[14px] truncate">
-                {randomUser.login.username}
+                {randomUser.name.first + " " + randomUser.name.last}
               </h4>
               <h5 className="text-[13px] text-gray-500 truncate">
-                {randomUser.name.first + " " + randomUser.name.last}
+                {randomUser.email}
               </h5>
             </div>
             <button className="ml-auto bg-black text-white rounded-full text-sm px-3.5 py-1.5 font-bold">

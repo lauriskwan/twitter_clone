@@ -42,7 +42,7 @@ export async function getServerSideProps() {
 
   // who to follow
   const randomUsersResults = await fetch(
-    "https://randomuser.me/api/?results=30&inc=name,login,picture"
+    "https://randomuser.me/api/?results=30&inc=name,login,picture,email"
   ).then((result) => result.json());
 
   return { props: { newsResults, randomUsersResults } };
