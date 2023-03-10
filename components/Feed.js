@@ -1,29 +1,23 @@
+import { db } from "@/firebase";
 import { SparklesIcon } from "@heroicons/react/outline";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import Input from "./Input";
 import Post from "./Post";
 
 export default function Feed() {
-  // Dummy Data
-  const posts = [
-    {
-      id: "1",
-      name: "Test User",
-      username: "testusername",
-      userImg: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-      img: "https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/official/en_us/products/2022/recommendations-on-twitter/how-recommendations-help-discover-more-twitter-1.jpg.img.fullhd.medium.jpg",
-      text: "UI demo",
-      timestamp: "2 hours ago",
-    },
-    {
-      id: "2",
-      name: "Test User",
-      username: "testusername",
-      userImg: "https://cdn-icons-png.flaticon.com/512/147/147144.png",
-      img: "https://poet.so/cover-photo.png",
-      text: "another UI demo",
-      timestamp: "3 hours ago",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "posts"), orderBy("timestamp", "desc")), // query, collection is a built-in function
+        (snapshot) => {
+          setPosts(snapshot.docs); // page update everytime whenever new post is posted; snapshot.docs is the returned data from firestore
+        }
+      ),
+    []
+  );
+
   return (
     <div className="xl:ml-[370px] border-l border-r border-gray-200 sm:ml-[73px] flex-grow max-w-xl ">
       <div className="flex py-2 px-3 sticky top-0 z-50 bg-white border-b border-gray-200">
@@ -34,6 +28,7 @@ export default function Feed() {
       </div>
       <Input />
       {posts.map((post) => {
+        console.log(post);
         return <Post key={post.id} post={post} />;
       })}
     </div>
