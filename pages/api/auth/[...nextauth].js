@@ -12,7 +12,19 @@ export const authOptions = {
   ],
 
   pages: {
-    signin: "/auth/signin",
+    signIn: "/auth/signin",
+  },
+
+  callbacks: {
+    async session({ session, token }) {
+      const nameModified = session.user.name
+        .split(" ")
+        .join("")
+        .toLocaleLowerCase();
+      const userToken = token.sub;
+      session.user.sessionUsername = nameModified + userToken;
+      return session;
+    },
   },
 };
 
