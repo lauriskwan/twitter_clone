@@ -58,7 +58,9 @@ export default function Post({ post }) {
     if (window.confirm("Are you sure you want to delete this post?")) {
       // generating a modal automatically
       deleteDoc(doc(db, "posts", post.id)); // delete text elements
-      deleteObject(ref(storage, `posts/${post.id}/image`)); // delete media
+      if (post.data().image) {
+        deleteObject(ref(storage, `posts/${post.id}/image`)); // delete media
+      }
     }
   }
 
