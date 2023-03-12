@@ -38,7 +38,7 @@ export default function Widget({ newsResults, randomUsersResults }) {
         {randomUsersResults.slice(0, randomUserNum).map((randomUser, index) => (
           <div
             key={randomUser.email}
-            className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-200"
+            className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-300 ease-out"
           >
             <img
               className="rounded-full"
