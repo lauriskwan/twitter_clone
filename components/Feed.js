@@ -11,7 +11,7 @@ export default function Feed() {
   useEffect(
     () =>
       onSnapshot(
-        query(collection(db, "posts"), orderBy("timestamp", "desc")), // query, collection is a built-in function
+        query(collection(db, "posts"), orderBy("timestamp", "desc")), // query, collection is a built-in function so that the function can sort (order by)
         (snapshot) => {
           setPosts(snapshot.docs); // page update everytime whenever new post is posted; snapshot.docs is the returned data from firestore
         }

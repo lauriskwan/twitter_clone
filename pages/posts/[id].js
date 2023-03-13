@@ -9,15 +9,39 @@ import Post from "@/components/Post";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { useEffect, useState } from "react";
 import { db } from "@/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { comment } from "postcss";
+import Comment from "@/components/Comment";
 
 export default function Postpage({ newsResults, randomUsersResults }) {
   const router = useRouter();
   const { id } = router.query; // getting the id from file name
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
 
   useEffect(
+    // get post data
     () => onSnapshot(doc(db, "posts", id), (snapshot) => setPost(snapshot)),
+    [db, id]
+  );
+
+  useEffect(
+    // get post comments
+    () => {
+      onSnapshot(
+        query(
+          collection(db, "posts", id, "comments"),
+          orderBy("timestamp", "desc")
+        ),
+        (snapshot) => setComments(snapshot.docs)
+      );
+    },
     [db, id]
   );
 
@@ -47,6 +71,17 @@ export default function Postpage({ newsResults, randomUsersResults }) {
           </div>
 
           <Post id={id} post={post} />
+          {comments.length > 0 && (
+            <div>
+              {comments.map((comment) => (
+                <Comment
+                  key={comment.id}
+                  id={comment.id}
+                  comment={comment.data()}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Widgets */}
