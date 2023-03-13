@@ -59,7 +59,7 @@ export default function CommentModal() {
 
     setOpen(false);
     setInput("");
-    router.push(`posts/${postID}`);
+    router.push(`/posts/${postID}`);
   }
 
   return (

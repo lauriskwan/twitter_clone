@@ -21,19 +21,21 @@ import { db, storage } from "@/firebase";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modalState, postIDState } from "@/atom/modalAtom";
+import { useRouter } from "next/router";
 
-export default function Post({ post }) {
+export default function Post({ post, id }) {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
   const [comments, setComments] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [open, setOpen] = useRecoilState(modalState);
   const [postID, setPostID] = useRecoilState(postIDState);
+  const router = useRouter();
 
   useEffect(() => {
     // getting number of likes
     const unsubscribe = onSnapshot(
-      collection(db, "posts", post.id, "likes"),
+      collection(db, "posts", id, "likes"),
       (snapshot) => setLikes(snapshot.docs)
     );
   }, [db]);
@@ -41,10 +43,10 @@ export default function Post({ post }) {
   useEffect(() => {
     // getting number of comments
     const unsubscribe = onSnapshot(
-      collection(db, "posts", post.id, "comments"),
+      collection(db, "posts", id, "comments"),
       (snapshot) => setComments(snapshot.docs)
     );
-  }, [db, post.id]);
+  }, [db, id]);
 
   useEffect(() => {
     // get whether the signed-in user has like a post
@@ -56,9 +58,9 @@ export default function Post({ post }) {
   async function likePost() {
     if (session) {
       if (hasLiked) {
-        await deleteDoc(doc(db, "posts", post.id, "likes", session?.user.uid));
+        await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid));
       } else {
-        await setDoc(doc(db, "posts", post.id, "likes", session?.user.uid), {
+        await setDoc(doc(db, "posts", id, "likes", session?.user.uid), {
           userEmail: session.user.email,
         });
       }
@@ -70,10 +72,11 @@ export default function Post({ post }) {
   async function deletePost() {
     if (window.confirm("Are you sure you want to delete this post?")) {
       // generating a modal automatically
-      deleteDoc(doc(db, "posts", post.id)); // delete text elements
-      if (post.data().image) {
-        deleteObject(ref(storage, `posts/${post.id}/image`)); // delete media
+      deleteDoc(doc(db, "posts", id)); // delete text elements
+      if (post.data()?.image) {
+        deleteObject(ref(storage, `posts/${id}/image`)); // delete media
       }
+      router.push("/");
     }
   }
 
@@ -82,7 +85,7 @@ export default function Post({ post }) {
       {/* icon */}
       <img
         className="h-11 w-11 rounded-full mr-4"
-        src={post.data().userImg}
+        src={post?.data()?.userImg}
         alt="user icon"
       />
       {/* right side */}
@@ -93,13 +96,13 @@ export default function Post({ post }) {
           {/* User info */}
           <div className="flex items-center space-x-1 whitespace-nowrap">
             <h4 className="font-bold text-[15px] sm:text-[16px] hover:underline">
-              {post.data().name}
+              {post?.data()?.name}
             </h4>
             <span className="text-sm sm:text-[15px]">
-              {post.data().userEmail} -
+              {post?.data()?.userEmail} -
             </span>
             <span className="text-sm sm:text-[15px] hover:underline">
-              <Moment fromNow>{post?.data().timestamp?.toDate()}</Moment>
+              <Moment fromNow>{post?.data()?.timestamp?.toDate()}</Moment>
             </span>
           </div>
           {/* dot icon */}
@@ -108,14 +111,14 @@ export default function Post({ post }) {
 
         {/* post text */}
         <p className="text-gray-800 text-[15px] sm:text-[16px] mb-2">
-          {post.data().text}
+          {post?.data()?.text}
         </p>
 
         {/* post image */}
-        {post.data().image && (
+        {post?.data()?.image && (
           <img
             className="rounded-2xl mr-2"
-            src={post.data().image}
+            src={post.data()?.image}
             alt="post image"
           />
         )}
@@ -126,7 +129,7 @@ export default function Post({ post }) {
             <ChatIcon
               onClick={() => {
                 if (session) {
-                  setPostID(post.id);
+                  setPostID(id);
                   setOpen(!open);
                 } else {
                   signIn();
@@ -138,7 +141,7 @@ export default function Post({ post }) {
               <span className="text-gray-500 text-sm">{comments.length}</span>
             )}
           </div>
-          {session?.user.uid === post?.data().id && (
+          {session?.user.uid === post?.data()?.id && (
             <TrashIcon
               onClick={deletePost}
               className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100"

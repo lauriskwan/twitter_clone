@@ -54,7 +54,7 @@ export default function Sidebar() {
           <div className="hoverEffect text-gray-700 flex items-center justify-center xl:justify-start mt-auto">
             <img
               onClick={signOut}
-              src={session.user.image}
+              src={session?.user?.image}
               alt="User Icon"
               className="h-10 w-10 rounded-full sm:ml-1.5 xl:mr-5 xl:ml-0"
             />
