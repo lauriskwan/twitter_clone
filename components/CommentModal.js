@@ -8,9 +8,16 @@ import {
 } from "@heroicons/react/outline";
 import { useEffect, useRef, useState } from "react";
 import { db } from "@/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+} from "firebase/firestore";
 import Moment from "react-moment";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function CommentModal() {
   const [open, setOpen] = useRecoilState(modalState);
@@ -20,8 +27,10 @@ export default function CommentModal() {
   const [selectedFile, setSelectedFile] = useState(null);
   const { data: session } = useSession();
   const filePickerRef = useRef(null); // initial value is null
+  const router = useRouter();
 
   useEffect(() => {
+    // retriving entries inside a post to the modal
     onSnapshot(doc(db, "posts", postID), (snapshot) => {
       setPost(snapshot);
     });
@@ -38,7 +47,20 @@ export default function CommentModal() {
     };
   };
 
-  function sendComment() {}
+  async function sendComment() {
+    await addDoc(collection(db, "posts", postID, "comments"), {
+      comment: input,
+      userID: session.user.uid,
+      name: session.user.name,
+      userEmail: session.user.email,
+      userImg: session.user.image,
+      timestamp: serverTimestamp(),
+    });
+
+    setOpen(false);
+    setInput("");
+    router.push(`posts/${postID}`);
+  }
 
   return (
     <div>
